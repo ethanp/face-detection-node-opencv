@@ -3,7 +3,7 @@ var cv = require('opencv');
 // camera properties
 var camWidth = 320;
 var camHeight = 240;
-var camFps = 10;
+var camFps = 3;
 var camInterval = 1000 / camFps;
 
 // face detection properties
@@ -15,20 +15,31 @@ var camera = new cv.VideoCapture(0);
 camera.setWidth(camWidth);
 camera.setHeight(camHeight);
 
+
+// here "socket" is passed by Socket.IO
 module.exports = function (socket) {
   setInterval(function() {
-    camera.read(function(err, im) {
+    camera.read(function(err, image) {
       if (err) throw err;
 
-      im.detectObject('./node_modules/opencv/data/haarcascade_frontalface_alt2.xml', {}, function(err, faces) {
+      image.detectObject('./node_modules/opencv/data/haarcascade_frontalface_alt2.xml', {}, function(err, faces) {
         if (err) throw err;
 
         for (var i = 0; i < faces.length; i++) {
-          face = faces[i];
-          im.rectangle([face.x, face.y], [face.width, face.height], rectColor, rectThickness);
+          var face = faces[i];
+
+          // draw a rectangle around each face detected in the haarcascade
+          // http://docs.opencv.org/modules/core/doc/drawing_functions.html#rectangle
+          // rectangle(point 1, point 2, color[, thickness[, lineType[, shift]]])
+          image.rectangle(
+              [face.x, face.y],
+              [face.width, face.height],
+              rectColor,
+              rectThickness
+          );
         }
 
-        socket.emit('frame', { buffer: im.toBuffer() });
+        socket.emit('frame', { buffer: image.toBuffer() });
       });
     });
   }, camInterval);
