@@ -4,6 +4,9 @@ Real-time face detection using OpenCV, Node.js, and WebSockets.
 
 Click [here](http://youtu.be/v2SY0naPBFw) to see it in action.
 
+Note though: the *server* is capturing the video stream, detecting the faces in it,
+and sending the resulting images to the client, who writes them to the canvas.
+
 ## Requirements
 
 * [Node.js](http://nodejs.org/)

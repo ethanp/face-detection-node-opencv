@@ -3,8 +3,8 @@
  ***********************************/
 
 // connect to the [LOCALLY RUNNING] Node server
-// I can't figure out where the `io` variable is COMING FROM !!
-// But it seems like it's coming from the server.js page ?!
+// this thing comes from the Socket.io library, which
+// seems to have sent its own client code to the browser by default.
 var socket = io.connect('http://localhost');
 
 var canvas = document.getElementById('canvas-video');
@@ -36,5 +36,13 @@ socket.on('frame', function (data) {
   img.onload = function () {
     context.drawImage(this, 0, 0, canvas.width, canvas.height);
   };
+
+  // This is a "Data URI", aka. file literal, aka. here document.
+  // It allows multiple resources to be included in a single HTTP
+  // request, saving overhead. The syntax is
+  //  data:[<media type>][;charset=<character set>][;base64],<data>
+  // media type defaults to text/plain
+  // charset defaults to US-ASCII (hinteresting)
+  // base64 is just a flag indicating that yes, it is base64 encoded
   img.src = 'data:image/png;base64,' + base64String;
 });

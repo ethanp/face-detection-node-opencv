@@ -38,7 +38,6 @@ module.exports = function (socket) {
               rectThickness
           );
         }
-
         socket.emit('frame', { buffer: image.toBuffer() });
       });
     });
